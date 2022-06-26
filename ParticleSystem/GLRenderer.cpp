@@ -27,12 +27,8 @@ namespace gfx {
 		}
 	}
 
-	void GLRenderer::setupViewport(const Viewport& viewport) {
-		glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-		currentViewportAspectRatio = (float)viewport.width / (float) viewport.height;
-	}
+	void GLRenderer::setupCamera(GLuint ubo, const Camera& camera, const Viewport& viewport) {
 
-	void GLRenderer::setupCamera(GLuint ubo, const Camera& camera) {
 		// We need to inform the shaders of the camera's properties 
 		// so that they can correctly transform the vertices, etc. 
 		// We are choosing to do this via a mechanism called a Uniform 
@@ -43,17 +39,20 @@ namespace gfx {
 		// which is basically just a fast block of GPU memory. We then need 
 		// to tell OpenGL to plug that Uniform buffer into our shaders.
 
+		glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+
 		// This CameraUBOData struct has the exact memory layout 
 		// that our shaders expect.
 		CameraUBOData uboData;
-		uboData.worldMat = glm::mat4x4(1.0f);
-		uboData.viewMat = glm::mat4x4(1.0f);
-		uboData.projMat = glm::perspective(
+		uboData.worldMat = camera.getTransform().getMatrix();
+		uboData.viewMat = glm::inverse(uboData.worldMat);
+		uboData.projMat = glm::perspectiveFov(
 			camera.getFovy(), 
-			this->currentViewportAspectRatio, 
+			(float) viewport.width,
+			(float) viewport.height,
 			camera.getNear(), 
 			camera.getFar());
-		uboData.viewProjMat = uboData.viewMat * uboData.projMat;
+		uboData.viewProjMat = uboData.projMat * uboData.viewMat;
 
 		// Next, we are transfering the camera data we set in uboData 
 		// to the graphics card via something called a Uniform 

@@ -1,13 +1,14 @@
 #pragma once
 
-#define PI 3.14159265358979f
+#include "Transform.h"
+#include "KeyboardInput.h"
+#include "MouseInput.h"
 
 class Camera {
 public:
 	// fovy is a common abbreviation
 	// for "Field of View Angle in the Vertical (y) Direction"
 	float getFovy() const { return fovy;  }
-
 
 	// The near plane clipping distance.
 	// Anything that is closer to the camera than this
@@ -20,9 +21,19 @@ public:
 	// will be clipped.
 	float getFar() const { return farPlane; }
 
+	// The Transform represents the camera's position 
+	// and orientation (a.k.a rotation) in 3D space.
+	const Transform& getTransform() const { return transform; }
+
+	// Processes keyboard input so that we can 
+	// control the camera with the keyboard
+	void processInput(const input::KeyboardInput& kb, const input::MouseInput& mouse, float deltaT);
+
 private:
 
-	float fovy = PI / 2.0f; // half-pi radians is 90 degrees.
+	float fovy = glm::pi<float>() / 2.0f; // half-pi radians is 90 degrees.
 	float nearPlane = 1.0f;
 	float farPlane = 1000.0f;
+	Transform transform;
+	float pitch = 0.0f, yaw = 0.0f;
 };

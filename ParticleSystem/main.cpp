@@ -1,14 +1,17 @@
 #include <string>
 #include <GL/glew.h>
-#include "Window.h"
-#include "GLRenderer.h"
+#include <glm/glm.hpp>
+
 #include "Utils.h"
-#include "glm/vec3.hpp"
-#include "glm/mat4x4.hpp"
+#include "Camera.h"
+
+#include "Window.h"
+#include "Win32KeyboardInput.h"
+#include "Win32MouseInput.h"
+
 #include "GLDevice.h"
 #include "GLResourceManager.h"
-#include "KeyboardInput.h"
-#include "Camera.h"
+#include "GLRenderer.h"
 
 using namespace glm;
 
@@ -21,15 +24,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     params.height = 1080;
 
     Window window = Window(params);
-    input::KeyboardInput keyInput;
+    input::Win32KeyboardInput keyboardInput;
+    input::Win32MouseInput mouseInput;
 
-    window.setOnKeyUpHandler([&keyInput] (UINT vkCode) {
-        keyInput.notifyKeyUpEvent(vkCode);
-    });
-    
-    window.setOnKeyDownHandler([&keyInput] (UINT vkCode) {
-        keyInput.notifyKeyDownEvent(vkCode);
-    });
+    window.setKeyboardEventHandler(&keyboardInput);
+    window.setOnMouseMovedHandler(&mouseInput);
 
     gfx::GLDevice glDevice(window.getHandle());
     glDevice.makeCurrent();
@@ -63,9 +62,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
 
     float vertices[] = {
-        -1.0f, -1.0f, -2.0f,
-         1.0f, -1.0f, -2.0f,
-         0.0f,  1.0f, -2.0f
+        -1.0f, -1.0f, -20.0f,
+         1.0f, -1.0f, -20.0f,
+         0.0f,  1.0f, -20.0f
     };
 
     unsigned int VAO;
@@ -83,51 +82,51 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     window.show();
 
-
     GLuint cameraUbo;
     glGenBuffers(1, &cameraUbo);
     Camera camera;
 
-    int redInput = 0;
     MSG msg = {};
-    while (msg.message != WM_QUIT) {
-        if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+    bool done = false;
+    while (!done) {
+        keyboardInput.onFrameBegin();
+        mouseInput.onFrameBegin();
+
+        while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        } else {
-
-            if (keyInput.isKeyDown(VK_DOWN)) {
-                ++redInput;
+            if (msg.message == WM_QUIT) {
+                done = true;
             }
-
-            ClearOptions clearOptions;
-            clearOptions.clearColor = true;
-            clearOptions.r = (redInput % 256) / 255.0f;
-            clearOptions.g = 0.58f;
-            clearOptions.b = 0.93f;
-            clearOptions.a = 1.0f;
-            clearOptions.clearDepth = true;
-            clearOptions.depth = 1.0;
-            clearOptions.clearStencil = true;
-            clearOptions.stencilValue = 0;
-            renderer.clear(clearOptions);
-
-            Viewport viewport;
-            viewport.x = 0;
-            viewport.y = 0;
-            viewport.width = window.getClientWidth();
-            viewport.height = window.getClientHeight();
-            renderer.setupViewport(viewport);
-
-            renderer.setupCamera(cameraUbo, camera);
-
-            glUseProgram(shaderProgram);
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-
-            glDevice.swapBuffers();
-            keyInput.swapBuffers();
         }
+
+        camera.processInput(keyboardInput, mouseInput, 1.0f / 60.0f);
+
+        ClearOptions clearOptions;
+        clearOptions.clearColor = true;
+        clearOptions.r = 0.5f;
+        clearOptions.g = 0.58f;
+        clearOptions.b = 0.93f;
+        clearOptions.a = 1.0f;
+        clearOptions.clearDepth = true;
+        clearOptions.depth = 1.0;
+        clearOptions.clearStencil = true;
+        clearOptions.stencilValue = 0;
+        renderer.clear(clearOptions);
+
+        Viewport viewport;
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = window.getClientWidth();
+        viewport.height = window.getClientHeight();
+
+        renderer.setupCamera(cameraUbo, camera, viewport);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glDevice.swapBuffers();
     }
 
     return 0;

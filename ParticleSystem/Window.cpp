@@ -1,5 +1,7 @@
-#include "Window.h"
 #include <map>
+#include <Windowsx.h>
+
+#include "Window.h"
 
 // We declared this static property already in the
 // Window class. However, this line of code actually 
@@ -128,7 +130,9 @@ LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
         // pass the wParam to the Window's onKeyUp function. Our 
         // input system is watching calls to this function to stay 
         // informed as to which keyboard keys are being pressed.
-        window.onKeyUp(wParam);
+        if (window.keyboardEventHandler != nullptr) {
+            window.keyboardEventHandler->onKeyUp(wParam);
+        }
         break;
     case WM_KEYDOWN:
         // The user pressed a key. The wParam contains a code 
@@ -136,8 +140,38 @@ LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
         // to the Window's onKeyUp function. Our input system is 
         // watching calls to this function to stay informed as 
         // to which keyboard keys are being pressed.
-        window.onKeyDown(wParam);
+        if (window.keyboardEventHandler != nullptr) {
+            window.keyboardEventHandler->onKeyDown(wParam);
+        }
         break;
+
+    case WM_MOUSEMOVE:
+        // The mouse moved :D
+        // The lParam contains the mouse x and y positions, but 
+        // we need to use the GET_X_LPARAM and GET_Y_LPARAM macros
+        // to extract them.
+        if (window.mouseEventHandler != nullptr) {
+
+            UINT x = GET_X_LPARAM(lParam);
+            UINT y = GET_Y_LPARAM(lParam);
+
+            POINT screenCenter;
+            screenCenter.x = window.clientWidth * 0.5f;
+            screenCenter.y = window.clientHeight * 0.5f;
+
+            ClientToScreen(hwnd, &screenCenter);
+            SetCursorPos(screenCenter.x, screenCenter.y);
+
+            UINT deltaX = x - screenCenter.x;
+            UINT deltaY = y - screenCenter.y;
+
+            window.mouseEventHandler->onMouseMoved(deltaX, deltaY);
+        }
+    case WM_SETFOCUS:
+        // The user has given this window focus, i.e. the 
+        // window is the currently-active window.
+        SetCapture(hwnd);
+        ShowCursor(FALSE);
     }
 
     // Whether or not we handled the message, we have to 

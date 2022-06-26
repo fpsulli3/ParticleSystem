@@ -1,12 +1,10 @@
 #pragma once
 
+#define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <map>
-#include <functional>
-
-// Typedef this because it's ugly.
-typedef std::function<void(UINT vkCode)> OnKeyEventHandler;
+#include "Win32InputHandlers.h"
 
 // Gives us some options in terms 
 // of what kind of window we want 
@@ -45,18 +43,15 @@ public:
 	// an integer that Win32 uses to uniquely identify a window.
 	HWND getHandle() { return this->hwnd; }
 
-	// Allows the caller to set an OnKeyEventHandler for "Key Up" 
-	// events, which are raised whenever the user presses a key.
-	// This uses a mechanism called a "Handler" a.k.a. a "Callback".
-	// The OnKeyEventHandler is a function that we can pass in like 
-	// a variable. Whenever a key is pressed, the Window class will 
-	// call this function. 
-	void setOnKeyDownHandler(OnKeyEventHandler handler) { onKeyDown = handler; }
+	// Allows an outside object to "register" to be informed of 
+	// any important keyboard events, such as when a key is pressed 
+	// or when a key is released.
+	void setKeyboardEventHandler(input::Win32KeyboardEventHandler*handler) { keyboardEventHandler = handler; }
 
-	// Allows the caller to set an OnKeyEventHandler for "Key Up" 
-	// events, which are raised whenever the user releases a key 
-	// that was pressed.
-	void setOnKeyUpHandler(OnKeyEventHandler handler) { onKeyUp = handler; }
+	// Allows an outside object to "register" to be informed of  
+	// any important mouse events, such as when the mouse moves, 
+	// or a mouse button is pressed.
+	void setOnMouseMovedHandler(input::Win32MouseEventHandler *handler) { mouseEventHandler = handler;  }
 
 	// When a Window is first created, it is typically not visible. Calling 
 	// this function will make it visible.
@@ -65,8 +60,8 @@ public:
 private:
 	int clientWidth, clientHeight, nCmdShow;
 	HWND hwnd;
-	OnKeyEventHandler onKeyUp;
-	OnKeyEventHandler onKeyDown;
+	input::Win32KeyboardEventHandler *keyboardEventHandler = nullptr;
+	input::Win32MouseEventHandler *mouseEventHandler = nullptr;
 
 	// The Window Procedure is a function that defines how we're 
 	// going to deal with Win32 events. Events include things like 

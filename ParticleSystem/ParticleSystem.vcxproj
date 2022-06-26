@@ -155,9 +155,11 @@
     <ClCompile Include="GLDevice.cpp" />
     <ClCompile Include="GLRenderer.cpp" />
     <ClCompile Include="GLResourceManager.cpp" />
-    <ClCompile Include="KeyboardInput.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Win32KeyboardInput.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Win32MouseInput.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,12 +170,17 @@
     <ClInclude Include="GLResourceManager.h" />
     <ClInclude Include="GLRenderer.h" />
     <ClInclude Include="KeyboardInput.h" />
+    <ClInclude Include="MouseInput.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Viewport.h" />
+    <ClInclude Include="Win32InputHandlers.h" />
+    <ClInclude Include="Win32KeyboardInput.h" />
+    <ClInclude Include="Win32MouseInput.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.gitignore" />
     <None Include="triangle.frag" />
     <None Include="triangle.vert" />
   </ItemGroup>
