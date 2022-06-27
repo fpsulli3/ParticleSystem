@@ -16,6 +16,6 @@ namespace input {
 	// Represents a class that can handle Win32 Mouse Events
 	class Win32MouseEventHandler {
 	public:
-		virtual void onMouseMoved(UINT xPos, UINT yPos) = 0;
+		virtual void onMouseMoved(LONG xPos, LONG yPos) = 0;
 	};
 }

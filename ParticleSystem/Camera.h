@@ -6,6 +6,9 @@
 
 class Camera {
 public:
+	// Constructor
+	Camera();
+
 	// fovy is a common abbreviation
 	// for "Field of View Angle in the Vertical (y) Direction"
 	float getFovy() const { return fovy;  }
@@ -31,8 +34,8 @@ public:
 
 private:
 
-	float fovy = glm::pi<float>() / 2.0f; // half-pi radians is 90 degrees.
-	float nearPlane = 1.0f;
+	float fovy = glm::pi<float>() / 3.0f; // 60 degrees.
+	float nearPlane = 0.2f;
 	float farPlane = 1000.0f;
 	Transform transform;
 	float pitch = 0.0f, yaw = 0.0f;

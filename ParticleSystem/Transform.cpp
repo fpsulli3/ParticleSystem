@@ -7,9 +7,9 @@ const glm::mat4& Transform::getMatrix() const {
 		// before we return it.
 
 		matrix = glm::mat4(1); // Start with an identity matrix 
-		matrix = glm::scale(matrix, scale); // Scale it
-		matrix *= glm::toMat4(rotation); // Rotate it
 		matrix = glm::translate(matrix, translation); // Translate it
+		matrix *= glm::toMat4(rotation); // Rotate it
+		matrix = glm::scale(matrix, scale); // Scale it
 
 		// We are now in sync
 		dirty = false;

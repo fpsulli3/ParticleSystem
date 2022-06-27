@@ -25,7 +25,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     Window window = Window(params);
     input::Win32KeyboardInput keyboardInput;
-    input::Win32MouseInput mouseInput;
+    input::Win32MouseInput mouseInput(window.getHandle());
 
     window.setKeyboardEventHandler(&keyboardInput);
     window.setOnMouseMovedHandler(&mouseInput);
@@ -62,9 +62,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
 
     float vertices[] = {
-        -1.0f, -1.0f, -20.0f,
-         1.0f, -1.0f, -20.0f,
-         0.0f,  1.0f, -20.0f
+        -1.0f, 0.0f, -20.0f,
+         1.0f, 0.0f, -20.0f,
+         0.0f,  2.0f, -20.0f
     };
 
     unsigned int VAO;

@@ -145,33 +145,22 @@ LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
         }
         break;
 
-    case WM_MOUSEMOVE:
-        // The mouse moved :D
-        // The lParam contains the mouse x and y positions, but 
-        // we need to use the GET_X_LPARAM and GET_Y_LPARAM macros
-        // to extract them.
-        if (window.mouseEventHandler != nullptr) {
+    case WM_INPUT: 
+        UINT dwSize = sizeof(RAWINPUT);
+        RAWINPUT raw;
 
-            UINT x = GET_X_LPARAM(lParam);
-            UINT y = GET_Y_LPARAM(lParam);
+        GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &raw, &dwSize, sizeof(RAWINPUTHEADER));
 
-            POINT screenCenter;
-            screenCenter.x = window.clientWidth * 0.5f;
-            screenCenter.y = window.clientHeight * 0.5f;
+        if (raw.header.dwType == RIM_TYPEMOUSE)
+        {
+            LONG xPosRelative = raw.data.mouse.lLastX;
+            LONG yPosRelative = raw.data.mouse.lLastY;
 
-            ClientToScreen(hwnd, &screenCenter);
-            SetCursorPos(screenCenter.x, screenCenter.y);
-
-            UINT deltaX = x - screenCenter.x;
-            UINT deltaY = y - screenCenter.y;
-
-            window.mouseEventHandler->onMouseMoved(deltaX, deltaY);
+            if (window.mouseEventHandler != nullptr) {
+                window.mouseEventHandler->onMouseMoved(xPosRelative, yPosRelative);
+            }
         }
-    case WM_SETFOCUS:
-        // The user has given this window focus, i.e. the 
-        // window is the currently-active window.
-        SetCapture(hwnd);
-        ShowCursor(FALSE);
+        break;
     }
 
     // Whether or not we handled the message, we have to 
