@@ -160,6 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Win32MouseInput.cpp" />
+    <ClCompile Include="Win32Timer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,12 +172,14 @@
     <ClInclude Include="GLRenderer.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="Win32InputHandlers.h" />
     <ClInclude Include="Win32KeyboardInput.h" />
     <ClInclude Include="Win32MouseInput.h" />
+    <ClInclude Include="Win32Timer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

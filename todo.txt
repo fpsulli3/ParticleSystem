@@ -1,3 +1,18 @@
-- Roll custom math library
-- Controller input
+- custom math library
+- replace STL
+- controller input
 - precompiled header
+- extract interface for GLDevice, rename to Win32GLDevice
+- Make sure no other GL classes know about Win32 other than Win32GLDevice
+- extract GL-free interfaces for GLResourceManager, GLRenderer, etc
+- support full screen
+- gamma correction
+- tone mapping
+
+
+000 0
+001 1
+010 2
+011 3
+100 4
+101 5

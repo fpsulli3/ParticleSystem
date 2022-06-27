@@ -60,6 +60,9 @@
     <ClCompile Include="Win32MouseInput.cpp">
       <Filter>Source Files\input</Filter>
     </ClCompile>
+    <ClCompile Include="Win32Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils.h">
@@ -106,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="Win32MouseInput.h">
       <Filter>Header Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Timer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

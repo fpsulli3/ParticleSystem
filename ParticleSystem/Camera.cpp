@@ -1,12 +1,11 @@
 #include "Camera.h"
 
 #define TRANSLATION_UNITS_PER_SECOND 8
-#define ROTATION_RADIANS_PER_PIXEL 0.05
+#define ROTATION_RADIANS_PER_PIXEL 0.065
 #define PITCH_LIMIT 1.55f // A little less than 90 degrees
 
-
 Camera::Camera() {
-	transform.translate(0, 1, 0);
+	transform.translate(0, 1, 20);
 }
 
 void Camera::processInput(const input::KeyboardInput& kb, const input::MouseInput& mouse, float deltaT) {
