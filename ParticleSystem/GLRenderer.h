@@ -9,20 +9,24 @@
 #include "ClearOptions.h"
 #include "Viewport.h"
 #include "Camera.h"
+#include "GLResourceManager.h"
 
 namespace gfx {
 
 	class GLRenderer {
 	public:
+		GLRenderer(GLResourceManager& resourceManager);
+		~GLRenderer();
 
 		// Clears the screen entirely, according to the ClearOptions.
 		void clear(const ClearOptions& clearOptions);
+
 
 		// Takes the properties of the Camera and informs the 
 		// shaders about the Camera's properties so that everything 
 		// is rendered in the right place, with the right field of 
 		// view and perspective distortion, etc.
-		void setupCamera(GLuint ubo, const Camera& camera, const Viewport& viewport);
+		void setupCamera(const Camera& camera, const Viewport& viewport);
 
 	private:
 
@@ -39,6 +43,9 @@ namespace gfx {
 			glm::mat4x4 projMat;
 			glm::mat4x4 viewProjMat;
 		};
+
+		GLResourceManager& resourceManager;
+		ResourceManager::HBUFFER cameraUniformBuffer;
 	};
 
 }

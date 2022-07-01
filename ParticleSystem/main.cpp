@@ -39,8 +39,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     params.hInstance = hInstance;
     params.nCmdShow = nCmdShow;
     params.title = L"Particle System";
-    params.width = 1920;
-    params.height = 1080;
+    params.width = 3440;
+    params.height = 1440;
+    params.fullScreen = true;
 
     Window window = Window(params);
     input::Win32KeyboardInput keyboardInput;
@@ -53,16 +54,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     glDevice.makeCurrent();
 
     gfx::GLResourceManager resourceManager;
-    gfx::GLRenderer renderer;
+    gfx::GLRenderer renderer(resourceManager);
 
     GLuint shaderProgram;
     {
         std::string vertShaderSource = loadAsciiFile("triangle.vert");
         std::string fragShaderSource = loadAsciiFile("triangle.frag");
-        shaderProgram = resourceManager.createProgramFromSource({
-                { GL_VERTEX_SHADER, vertShaderSource.c_str() },
-                { GL_FRAGMENT_SHADER, fragShaderSource.c_str() }
-            });
+        gfx::ResourceManager::ShaderSource vertexShaderSource = { 
+            gfx::ResourceManager::ShaderType::VERTEX_SHADER, 
+            vertShaderSource.c_str() 
+        };
+        gfx::ResourceManager::ShaderSource fragmentShaderSource = { 
+            gfx::ResourceManager::ShaderType::FRAGMENT_SHADER, 
+            fragShaderSource.c_str() 
+        };
+        gfx::ResourceManager::ShaderSource shaders[2] = { vertexShaderSource, fragmentShaderSource };
+
+        shaderProgram = resourceManager.createProgramFromSource(shaders, 2);
 
         if (shaderProgram == gfx::RESOURCE_CREATION_FAILED) {
             ::MessageBoxA(
@@ -75,7 +83,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     const float MAX_EXPLOSION_RADIUS = 10.0f;
 
-    Particles particles;
+    Particles *particles = new Particles;
 
     for (int i = 0; i < NUM_PARTICLES; i++) {
         float theta = randomFloat(0, glm::pi<float>());
@@ -94,15 +102,15 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         float g = lerp(0.9, 0.4, t) + randomFloat(0.0f, 0.1f);
         float b = randomFloat(0.0f, 0.2f);
 
-        particles.positions[i] = glm::vec4(x, y, z, 1);
-        particles.colors[i] = glm::vec4(r, g, b, 1);
-        particles.sizes[i] = glm::vec4(size, 100, 100, 100);
+        particles->positions[i] = glm::vec4(x, y, z, 1);
+        particles->colors[i] = glm::vec4(r, g, b, 1);
+        particles->sizes[i] = glm::vec4(size, 100, 100, 100);
     }
 
     GLuint ssbo;
     glGenBuffers(1, &ssbo);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Particles), &particles, GL_DYNAMIC_DRAW);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Particles), particles, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
@@ -111,23 +119,38 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     glBindVertexArray(VAO);
 
     const int NUM_INDICES = NUM_PARTICLES * 6;
-    unsigned short indices[NUM_INDICES];
+    unsigned int*indices = new unsigned int[NUM_INDICES];
 
     for (int i = 0; i < NUM_INDICES; i++) {
         indices[i] = i;
     }
 
-    GLsizeiptr indexBufferSize = sizeof(unsigned short) * NUM_PARTICLES * 6;
+    GLsizeiptr indexBufferSize = sizeof(unsigned int) * NUM_PARTICLES * 6;
     GLuint indexBuffer;
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, &indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indices, GL_STATIC_DRAW);
 
     window.show();
 
-    GLuint cameraUbo;
-    glGenBuffers(1, &cameraUbo);
     Camera camera;
+
+    Viewport viewport;
+    viewport.x = 0;
+    viewport.y = 0;
+    viewport.width = window.getClientWidth();
+    viewport.height = window.getClientHeight();
+
+    ClearOptions clearOptions;
+    clearOptions.clearColor = true;
+    clearOptions.r = 0.5f;
+    clearOptions.g = 0.58f;
+    clearOptions.b = 0.93f;
+    clearOptions.a = 1.0f;
+    clearOptions.clearDepth = true;
+    clearOptions.depth = 1.0;
+    clearOptions.clearStencil = true;
+    clearOptions.stencilValue = 0;
 
     int numFrames = 0;
     Win32Timer timer;
@@ -150,34 +173,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         camera.processInput(keyboardInput, mouseInput, timer.getDeltaTime());
 
-        ClearOptions clearOptions;
-        clearOptions.clearColor = true;
-        clearOptions.r = 0.5f;
-        clearOptions.g = 0.58f;
-        clearOptions.b = 0.93f;
-        clearOptions.a = 1.0f;
-        clearOptions.clearDepth = true;
-        clearOptions.depth = 1.0;
-        clearOptions.clearStencil = true;
-        clearOptions.stencilValue = 0;
-        renderer.clear(clearOptions);
-
-        Viewport viewport;
-        viewport.x = 0;
-        viewport.y = 0;
         viewport.width = window.getClientWidth();
         viewport.height = window.getClientHeight();
 
-        renderer.setupCamera(cameraUbo, camera, viewport);
+        renderer.clear(clearOptions);
+        renderer.setupCamera(camera, viewport);
 
         glUseProgram(shaderProgram);
 
-        glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_SHORT, NULL);
+        glDrawElements(GL_TRIANGLES, NUM_INDICES, GL_UNSIGNED_INT, NULL);
 
         glDevice.swapBuffers();
     }
 
     double avgFrameTime = timer.getTotalTime() / numFrames;
+
+    delete[] indices;
+    delete particles;
 
     return 0;
 }

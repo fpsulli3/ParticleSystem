@@ -6,8 +6,8 @@
 #include <GL/glew.h>
 #include <vector>
 #include <map>
-
-using namespace std;
+#include <list>
+#include "ResourceManager.h"
 
 namespace gfx {
 	const GLuint RESOURCE_CREATION_FAILED = -1;
@@ -29,20 +29,23 @@ namespace gfx {
 	 * GLResourceManager is destroyed, its destructor will delete those 
 	 * resources for you.
 	 */
-	class GLResourceManager {
+	class GLResourceManager : public ResourceManager {
 	public:
 
 		~GLResourceManager();
 
-		struct ShaderSourceDesc {
-			GLenum type;
-			const GLchar* source;
-		};
+		// Shader Programs
+		HPROGRAM createProgramFromSource(const ShaderSource* shaders, unsigned int numShaders);
+		void deleteProgram(HPROGRAM programHandle);
 
-		GLuint createProgramFromSource(const vector<ShaderSourceDesc>& desc);
-		void deleteProgram(GLuint programHandle);
+		// Buffers
+		HBUFFER createStreamingUniformBuffer(unsigned int initialDataSize, unsigned char* initialData);
+		void streamDataToUniformBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+		void bindUniformBufferBase(HBUFFER handle, unsigned int index);
+		HBUFFER createStreamingStorageBuffer(unsigned int initialDataSize, unsigned char* initialData);
+		void streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
 
-		GLuint createStreamingUniformBuffer(int size, unsigned char* initialData);
+		void deleteBuffer(HBUFFER bufferHandle);
 
 		/**
 		 * Returns the last error that occurred while managing a resource. I don't 
@@ -61,9 +64,24 @@ namespace gfx {
 			GLuint* shaderHandles;
 		};
 
-		map<GLuint, ProgramDesc> programs;
+		std::map<HPROGRAM, ProgramDesc> programs;
+
+		struct BufferDesc {
+			HBUFFER bufferHandle;
+			unsigned int initialSize;
+		};
+
+		std::map<HBUFFER, BufferDesc> buffers;
+		HBUFFER curUniformBuffer = 0;
+		HBUFFER curStorageBuffer = 0;
+
+		void bindUniformBuffer(HBUFFER buffer);
+		void bindStorageBuffer(HBUFFER buffer);
 
 		void deleteProgram(const ProgramDesc& program);
 		void setLastError(const GLchar* error);
+
+		GLuint createStreamingBuffer(GLenum target, unsigned int initialDataSize, unsigned char* initialData);
+		void streamDataToBuffer(GLenum target, HBUFFER bufferHandle, unsigned int dataSize, const void* data);
 	};
 }

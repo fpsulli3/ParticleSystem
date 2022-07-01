@@ -8,7 +8,7 @@ const vec4 offsets[6] = vec4[6](
 	vec4( 0.5,  0.5, 0, 1),
 	vec4(-0.5, -0.5, 0, 1),
 	vec4( 0.5,  0.5, 0, 1),
-	vec4( 0.5, -0.5, 0, 1)
+	vec4( 0.5, -0.5, 0, 1) 
 );
 
 // The Camera UBO interface block

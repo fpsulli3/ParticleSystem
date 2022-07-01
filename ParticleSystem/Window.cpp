@@ -38,6 +38,8 @@ Window::Window(const WindowParams& params)
 
     RegisterClass(&wc);
 
+    DWORD dwStyle = params.fullScreen ? WS_POPUP : WS_OVERLAPPEDWINDOW;
+
     // Now we can actually create the window. The HWND that is returned 
     // is the Win32 "Window Handle". It is basically just a number that 
     // is used by Win32 to uniquely identify the window. When we want to 
@@ -47,7 +49,7 @@ Window::Window(const WindowParams& params)
         0,                              // Optional window styles (none)
         CLASS_NAME,                     // The name of our Window Class
         params.title,                   // The window's title text
-        WS_OVERLAPPEDWINDOW | CS_OWNDC, // The window's style. (windowed mode with its own Device Context)
+        dwStyle | CS_OWNDC,             // The window's style.
         CW_USEDEFAULT, CW_USEDEFAULT,   // The window's position (we're telling Win32 to put the window wherever it wants)
         params.width, params.height,    // Window width/height
         NULL,                           // Parent window    

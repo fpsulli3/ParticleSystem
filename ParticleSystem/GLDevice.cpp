@@ -1,7 +1,10 @@
 #include "GLDevice.h"
 #include <gl/wglew.h>
+#include <cstdlib>
 
 namespace gfx {
+	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT;
+
 	GLDevice::GLDevice(HWND hwnd) {
 		
 		deviceContext = GetDC(hwnd);
@@ -78,6 +81,12 @@ namespace gfx {
 		// needed the temporary context; so we can initialize the extensions.
 		// Stupid, but it is what it is.
 		renderContext = wglCreateContextAttribsARB(deviceContext, 0, attributes);
+		wglMakeCurrent(deviceContext, renderContext);
+
+
+		// Disable vsync
+		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
+		wglSwapIntervalEXT(0);
 	}
 
 	GLDevice::~GLDevice() {
@@ -92,6 +101,6 @@ namespace gfx {
 	}
 
 	void GLDevice::swapBuffers() {
-		SwapBuffers(deviceContext);
+		SwapBuffers(deviceContext); 
 	}
 }

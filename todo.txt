@@ -8,11 +8,4 @@
 - support full screen
 - gamma correction
 - tone mapping
-
-
-000 0
-001 1
-010 2
-011 3
-100 4
-101 5
+- update to GLFW?

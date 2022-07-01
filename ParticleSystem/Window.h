@@ -14,6 +14,7 @@ struct WindowParams {
 	int nCmdShow;
 	const wchar_t* title;
 	int width, height;
+	bool fullScreen;
 };
 
 // Our custom Window class.
