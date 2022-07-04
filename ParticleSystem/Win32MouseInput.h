@@ -17,7 +17,6 @@ namespace input {
 		void onMouseMoved(LONG xPos, LONG yPos);
 
 	private:
-		bool firstInputReceived = false;
 		int deltaX = 0, deltaY = 0;
 	};
 }

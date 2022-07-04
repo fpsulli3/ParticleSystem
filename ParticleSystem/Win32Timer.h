@@ -12,6 +12,6 @@ public:
 	double getTotalTime() const { return totalTime;  }
 	double getDeltaTime() const { return deltaTime;  }
 private:
-	LARGE_INTEGER startTime, prevTime, frequency;
+	LARGE_INTEGER prevTime, frequency;
 	double totalTime = 0.0, deltaTime = 0.0;
 };

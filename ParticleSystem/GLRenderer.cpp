@@ -69,4 +69,15 @@ namespace gfx {
 		// to the correct interface block in the shader.
 		resourceManager.bindUniformBufferBase(cameraUniformBuffer, CAMERA_UNIFORM_BLOCK_INDEX);
 	}
+
+	void GLRenderer::draw(const std::vector<DrawCall> drawCalls) {
+
+		for (size_t i = 0; i < drawCalls.size(); i++) {
+			const DrawCall& drawCall = drawCalls[i];
+			resourceManager.useProgram(drawCall.programHandle);
+			resourceManager.bindStorageBufferBase(drawCall.storageBuffer, drawCall.storageBufferBaseIndex);
+			resourceManager.bindVAO(drawCall.vaoHandle);
+			glDrawElements(GL_TRIANGLES, drawCall.numIndices, GL_UNSIGNED_INT, NULL);
+		}
+	}
 }

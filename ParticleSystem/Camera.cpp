@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 #define TRANSLATION_UNITS_PER_SECOND 8
-#define ROTATION_RADIANS_PER_PIXEL 0.065
+#define ROTATION_RADIANS_PER_PIXEL 0.2
 #define PITCH_LIMIT 1.55f // A little less than 90 degrees
 
 Camera::Camera() {

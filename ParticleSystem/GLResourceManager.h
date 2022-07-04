@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <functional>
+
 #include "ResourceManager.h"
 
 namespace gfx {
@@ -37,15 +39,23 @@ namespace gfx {
 		// Shader Programs
 		HPROGRAM createProgramFromSource(const ShaderSource* shaders, unsigned int numShaders);
 		void deleteProgram(HPROGRAM programHandle);
+		void useProgram(HPROGRAM programHandle);
 
 		// Buffers
 		HBUFFER createStreamingUniformBuffer(unsigned int initialDataSize, unsigned char* initialData);
 		void streamDataToUniformBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
 		void bindUniformBufferBase(HBUFFER handle, unsigned int index);
+
 		HBUFFER createStreamingStorageBuffer(unsigned int initialDataSize, unsigned char* initialData);
 		void streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+		void bindStorageBufferBase(HBUFFER handle, unsigned int index);
 
 		void deleteBuffer(HBUFFER bufferHandle);
+
+		// VAOs
+		virtual HVAO createVAO(const VAOConfig& config);
+		virtual void deleteVAO(HVAO vaoHandle);
+		virtual void bindVAO(HVAO vaoHandle);
 
 		/**
 		 * Returns the last error that occurred while managing a resource. I don't 
@@ -66,6 +76,14 @@ namespace gfx {
 
 		std::map<HPROGRAM, ProgramDesc> programs;
 
+		enum BufferType: unsigned int {
+			ARRAY,
+			INDEX,
+			SHADER_STORAGE,
+			UNIFORM,
+			NUM_BUFFER_TYPES
+		};
+
 		struct BufferDesc {
 			HBUFFER bufferHandle;
 			unsigned int initialSize;
@@ -74,6 +92,7 @@ namespace gfx {
 		std::map<HBUFFER, BufferDesc> buffers;
 		HBUFFER curUniformBuffer = 0;
 		HBUFFER curStorageBuffer = 0;
+		HBUFFER curBuffers[NUM_BUFFER_TYPES];
 
 		void bindUniformBuffer(HBUFFER buffer);
 		void bindStorageBuffer(HBUFFER buffer);
@@ -83,5 +102,8 @@ namespace gfx {
 
 		GLuint createStreamingBuffer(GLenum target, unsigned int initialDataSize, unsigned char* initialData);
 		void streamDataToBuffer(GLenum target, HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+
+		std::map<HVAO, BufferDesc> vaos;
+		HVAO curVao = 0;
 	};
 }

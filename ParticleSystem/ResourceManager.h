@@ -1,3 +1,5 @@
+#pragma once
+
 namespace gfx {
 
 	class ResourceManager {
@@ -25,8 +27,21 @@ namespace gfx {
 
 		virtual HBUFFER createStreamingUniformBuffer(unsigned int initialDataSize, unsigned char* initialData) = 0;
 		virtual void streamDataToUniformBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data) = 0;
+
 		virtual HBUFFER createStreamingStorageBuffer(unsigned int initialDataSize, unsigned char* initialData) = 0;
 		virtual void streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data) = 0;
+
 		virtual void deleteBuffer(HBUFFER bufferHandle) = 0;
+
+		// VAO
+		typedef unsigned int HVAO;
+
+		struct VAOConfig {
+			int indexBufferSizeBytes;
+			const void* indexData;
+		};
+
+		virtual HVAO createVAO(const VAOConfig& config) = 0;
+		virtual void deleteVAO(HVAO vaoHandle) = 0;
 	};
 }

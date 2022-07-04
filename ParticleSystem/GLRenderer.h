@@ -5,11 +5,13 @@
 #include <Windows.h>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "ClearOptions.h"
 #include "Viewport.h"
 #include "Camera.h"
 #include "GLResourceManager.h"
+#include "DrawCall.h"
 
 namespace gfx {
 
@@ -27,6 +29,8 @@ namespace gfx {
 		// is rendered in the right place, with the right field of 
 		// view and perspective distortion, etc.
 		void setupCamera(const Camera& camera, const Viewport& viewport);
+
+		void draw(const std::vector<DrawCall> drawCalls);
 
 	private:
 

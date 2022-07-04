@@ -26,7 +26,5 @@ namespace input {
 	void Win32MouseInput::onMouseMoved(LONG deltaX, LONG deltaY) {
 		this->deltaX += deltaX;
 		this->deltaY += deltaY;
-
-		firstInputReceived = true;
 	}
 }

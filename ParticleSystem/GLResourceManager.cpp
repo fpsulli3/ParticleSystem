@@ -1,5 +1,6 @@
 #include "GLResourceManager.h"
 
+
 namespace gfx {
 
 	std::map<ResourceManager::ShaderType, GLenum> shaderTypeLookup;
@@ -34,7 +35,7 @@ namespace gfx {
 		while (bufferItr != buffers.end()) {
 			HBUFFER handle = bufferItr->first;
 			glDeleteBuffers(1, &handle);
-			buffers.erase(++bufferItr);
+			buffers.erase(bufferItr++);
 		}
 	}
 
@@ -95,6 +96,10 @@ namespace gfx {
 		}
 	}
 
+	void GLResourceManager::useProgram(HPROGRAM programHandle) {
+		glUseProgram(programHandle);
+	}
+
 	GLResourceManager::HBUFFER GLResourceManager::createStreamingUniformBuffer(unsigned int initialDataSize, unsigned char* initialData) {
 		return createStreamingBuffer(GL_UNIFORM_BUFFER, initialDataSize, initialData);
 	}
@@ -108,11 +113,15 @@ namespace gfx {
 	}
 
 	GLResourceManager::HBUFFER GLResourceManager::createStreamingStorageBuffer(unsigned int initialDataSize, unsigned char* initialData) {
-		return HBUFFER();
+		return createStreamingBuffer(GL_SHADER_STORAGE_BUFFER, initialDataSize, initialData);
 	}
 
 	void GLResourceManager::streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data) {
+		streamDataToBuffer(GL_SHADER_STORAGE_BUFFER, bufferHandle, dataSize, data);
+	}
 
+	void GLResourceManager::bindStorageBufferBase(HBUFFER handle, unsigned int index) {
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, handle);
 	}
 
 	void GLResourceManager::deleteBuffer(HBUFFER bufferHandle) {
@@ -187,5 +196,29 @@ namespace gfx {
 			memcpy(bufferMem, data, dataSize);
 			glUnmapBuffer(target);
 		}
+	}
+
+	ResourceManager::HVAO GLResourceManager::createVAO(const VAOConfig& config) {
+		GLuint vao;
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(1);
+
+		if (config.indexData != NULL) {
+			GLuint indexBuffer;
+			glGenBuffers(1, &indexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, config.indexBufferSizeBytes, config.indexData, GL_STATIC_DRAW);
+		}
+
+		return vao;
+	}
+
+	void GLResourceManager::deleteVAO(HVAO vaoHandle) {
+		glDeleteVertexArrays(1, &vaoHandle);		
+	}
+
+	void GLResourceManager::bindVAO(HVAO vaoHandle) {
+		glBindVertexArray(vaoHandle);
+		curVao = vaoHandle;
 	}
 }
