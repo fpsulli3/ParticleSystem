@@ -5,7 +5,7 @@
 #define PITCH_LIMIT 1.55f // A little less than 90 degrees
 
 Camera::Camera() {
-	transform.translate(0, 1, 20);
+	transform.translate(0, 3, 30);
 }
 
 void Camera::processInput(const input::KeyboardInput& kb, const input::MouseInput& mouse, float deltaT) {

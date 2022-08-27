@@ -10,15 +10,17 @@
 #include "Win32MouseInput.h"
 #include "Win32Timer.h"
 
-#include "GLDevice.h"
-#include "GLResourceManager.h"
-#include "GLRenderer.h"
+#include "Device.h"
+#include "ResourceManager.h"
+#include "Renderer.h"
 
 #include "ParticleSystem.h"
+#include "GraphicsSystem.h"
 
 using namespace glm;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow) {
+    // Create window
     WindowParams params;
     params.hInstance = hInstance;
     params.nCmdShow = nCmdShow;
@@ -26,26 +28,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     params.width = 3440;
     params.height = 1440;
     params.fullScreen = true;
-
     Window window = Window(params);
+
+    // Init graphics
+    gfx::GraphicsSystem gfx(gfx::GraphicsSystem::OpenGL, window);
+    gfx.device().makeCurrent();
+
+    // Init input
     input::Win32KeyboardInput keyboardInput;
     input::Win32MouseInput mouseInput(window.getHandle());
-
     window.setKeyboardEventHandler(&keyboardInput);
     window.setOnMouseMovedHandler(&mouseInput);
 
-    gfx::GLDevice glDevice(window.getHandle());
-    glDevice.makeCurrent();
-
-    gfx::GLResourceManager resourceManager;
-    gfx::GLRenderer renderer(resourceManager);
-
+    // Init scene
     ParticleSystem::Config particleSystemConfig;
-    particleSystemConfig.maxParticles = 10000;
+    particleSystemConfig.maxParticles = 100000;
     ParticleSystem particleSystem(particleSystemConfig);
-    particleSystem.initGraphicsResources(resourceManager);
-
-    window.show();
+    particleSystem.initGraphicsResources(gfx.resourceManager());
 
     Camera camera;
 
@@ -57,9 +56,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ClearOptions clearOptions;
     clearOptions.clearColor = true;
-    clearOptions.r = 0.5f;
-    clearOptions.g = 0.58f;
-    clearOptions.b = 0.93f;
+    clearOptions.r = 0.1f;
+    clearOptions.g = 0.05f;
+    clearOptions.b = 0.1f;
     clearOptions.a = 1.0f;
     clearOptions.clearDepth = true;
     clearOptions.depth = 1.0;
@@ -68,16 +67,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     std::vector<gfx::DrawCall> drawCalls;
 
+    window.show();
+
     int numFrames = 0;
     Win32Timer timer;
     MSG msg = {};
     bool done = false;
     while (!done) {
+        // Reset
         keyboardInput.onFrameBegin();
         mouseInput.onFrameBegin();
         timer.onFrameBegin();
         drawCalls.clear();
 
+        // Update
         ++numFrames;
 
         while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -91,17 +94,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         camera.processInput(keyboardInput, mouseInput, timer.getDeltaTime());
         particleSystem.update(timer.getDeltaTime());
 
-        particleSystem.getDrawCalls(resourceManager, drawCalls);
+        // Cull
+        particleSystem.getDrawCalls(gfx.resourceManager(), drawCalls);
 
+        // Render
         viewport.width = window.getClientWidth();
         viewport.height = window.getClientHeight();
+        gfx.renderer().clear(clearOptions);
+        gfx.renderer().setupCamera(camera, viewport);
 
-        renderer.clear(clearOptions);
-        renderer.setupCamera(camera, viewport);
+        gfx.renderer().draw(drawCalls);
 
-        renderer.draw(drawCalls);
-
-        glDevice.swapBuffers();
+        gfx.device().swapBuffers();
     }
 
     double avgFrameTime = timer.getTotalTime() / numFrames;

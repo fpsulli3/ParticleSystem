@@ -28,6 +28,12 @@
     <Filter Include="Source Files\input">
       <UniqueIdentifier>{b72fc370-7956-43a7-9597-4d29ae5fefdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gfx\gl">
+      <UniqueIdentifier>{2309cf48-554f-4090-81c3-1482d548c1b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gfx\gl">
+      <UniqueIdentifier>{1b59ba63-c431-4481-a8e2-1ad17266a6e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,15 +41,6 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLRenderer.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="GLResourceManager.cpp">
-      <Filter>Source Files\gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="GLDevice.cpp">
-      <Filter>Source Files\gfx</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Source Files</Filter>
@@ -69,6 +66,18 @@
     <ClCompile Include="ResourceManager.h">
       <Filter>Header Files\gfx</Filter>
     </ClCompile>
+    <ClCompile Include="GLDevice.cpp">
+      <Filter>Source Files\gfx\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLRenderer.cpp">
+      <Filter>Source Files\gfx\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="GLResourceManager.cpp">
+      <Filter>Source Files\gfx\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsSystem.cpp">
+      <Filter>Source Files\gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils.h">
@@ -77,19 +86,7 @@
     <ClInclude Include="ClearOptions.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
-    <ClInclude Include="GLDrawCall.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="GLRenderer.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
     <ClInclude Include="Viewport.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="GLResourceManager.h">
-      <Filter>Header Files\gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="GLDevice.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
@@ -126,6 +123,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrawCall.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="GLDevice.h">
+      <Filter>Header Files\gfx\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="GLRenderer.h">
+      <Filter>Header Files\gfx\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="GLResourceManager.h">
+      <Filter>Header Files\gfx\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Header Files\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsSystem.h">
       <Filter>Header Files\gfx</Filter>
     </ClInclude>
   </ItemGroup>

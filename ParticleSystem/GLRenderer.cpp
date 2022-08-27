@@ -63,7 +63,9 @@ namespace gfx {
 		uboData.viewProjMat = uboData.projMat * uboData.viewMat;
 
 		// Stream the data to video memory buffer
-		resourceManager.streamDataToUniformBuffer(cameraUniformBuffer, sizeof(CameraUBOData), (const void*) &uboData);
+		resourceManager.streamDataToUniformBuffer(cameraUniformBuffer, [uboData](void* buffer) {
+				memcpy_s(buffer, sizeof(CameraUBOData), (const void*)&uboData, sizeof(CameraUBOData));
+			});
 
 		// Lastly, we tell OpenGL that we need to match this UBO 
 		// to the correct interface block in the shader.
@@ -74,9 +76,13 @@ namespace gfx {
 
 		for (size_t i = 0; i < drawCalls.size(); i++) {
 			const DrawCall& drawCall = drawCalls[i];
-			resourceManager.useProgram(drawCall.programHandle);
-			resourceManager.bindStorageBufferBase(drawCall.storageBuffer, drawCall.storageBufferBaseIndex);
-			resourceManager.bindVAO(drawCall.vaoHandle);
+			bool done = false;
+			if (!done) {
+				resourceManager.useProgram(drawCall.programHandle);
+				resourceManager.bindStorageBufferBase(drawCall.storageBuffer, drawCall.storageBufferBaseIndex);
+				resourceManager.bindVAO(drawCall.vaoHandle);
+				done = true;
+			}
 			glDrawElements(GL_TRIANGLES, drawCall.numIndices, GL_UNSIGNED_INT, NULL);
 		}
 	}

@@ -7,15 +7,17 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-#include "ClearOptions.h"
-#include "Viewport.h"
 #include "Camera.h"
-#include "GLResourceManager.h"
+#include "ClearOptions.h"
 #include "DrawCall.h"
+#include "GLResourceManager.h"
+#include "Renderer.h"
+#include "Viewport.h"
 
 namespace gfx {
 
-	class GLRenderer {
+	// An OpenGL implementation of the Renderer class
+	class GLRenderer: public Renderer {
 	public:
 		GLRenderer(GLResourceManager& resourceManager);
 		~GLRenderer();
@@ -30,6 +32,7 @@ namespace gfx {
 		// view and perspective distortion, etc.
 		void setupCamera(const Camera& camera, const Viewport& viewport);
 
+		// Takes a list of draw calls and draws them!
 		void draw(const std::vector<DrawCall> drawCalls);
 
 	private:

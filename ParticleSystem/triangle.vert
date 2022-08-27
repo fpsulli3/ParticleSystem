@@ -1,12 +1,10 @@
 #version 460 core
 
-#define NUM_PARTICLES 10000
+#define NUM_PARTICLES 100000
 
-const vec4 offsets[6] = vec4[6](
+const vec4 offsets[4] = vec4[4](
 	vec4(-0.5, -0.5, 0, 1),
 	vec4(-0.5,  0.5, 0, 1),
-	vec4( 0.5,  0.5, 0, 1),
-	vec4(-0.5, -0.5, 0, 1),
 	vec4( 0.5,  0.5, 0, 1),
 	vec4( 0.5, -0.5, 0, 1) 
 );
@@ -28,8 +26,8 @@ layout(std140, binding = 0) buffer Particles {
 out vec4 color;
 
 void main() {
-    int particleID = gl_VertexID / 6;
-    int offsetIndex = gl_VertexID % 6;
+    int particleID = gl_VertexID / 4;
+    int offsetIndex = gl_VertexID % 4;
 
     vec4 viewSpacePos = camera.viewMat * particles.positions[particleID];   
     vec4 offset = offsets[offsetIndex] * particles.sizes[particleID];

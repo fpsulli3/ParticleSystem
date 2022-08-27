@@ -104,8 +104,8 @@ namespace gfx {
 		return createStreamingBuffer(GL_UNIFORM_BUFFER, initialDataSize, initialData);
 	}
 
-	void GLResourceManager::streamDataToUniformBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data) {
-		streamDataToBuffer(GL_UNIFORM_BUFFER, bufferHandle, dataSize, data);
+	void GLResourceManager::streamDataToUniformBuffer(HBUFFER bufferHandle, const BufferCallback &bufferCallback) {
+		streamDataToBuffer(GL_UNIFORM_BUFFER, bufferHandle, bufferCallback);
 	}
 
 	void GLResourceManager::bindUniformBufferBase(HBUFFER handle, unsigned int index) {
@@ -116,8 +116,8 @@ namespace gfx {
 		return createStreamingBuffer(GL_SHADER_STORAGE_BUFFER, initialDataSize, initialData);
 	}
 
-	void GLResourceManager::streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data) {
-		streamDataToBuffer(GL_SHADER_STORAGE_BUFFER, bufferHandle, dataSize, data);
+	void GLResourceManager::streamDataToStorageBuffer(HBUFFER bufferHandle, const BufferCallback &bufferCallback) {
+		streamDataToBuffer(GL_SHADER_STORAGE_BUFFER, bufferHandle, bufferCallback);
 	}
 
 	void GLResourceManager::bindStorageBufferBase(HBUFFER handle, unsigned int index) {
@@ -178,7 +178,7 @@ namespace gfx {
 		return buffer;
 	}
 
-	void GLResourceManager::streamDataToBuffer(GLenum target, HBUFFER bufferHandle, unsigned int dataSize, const void* data) {
+	void GLResourceManager::streamDataToBuffer(GLenum target, HBUFFER bufferHandle, const BufferCallback &bufferCallback) {
 		std::map<HBUFFER, BufferDesc>::const_iterator itr = buffers.find(bufferHandle);
 
 		if (itr != buffers.end()) {
@@ -193,8 +193,9 @@ namespace gfx {
 
 			// Next, we actually copy the data to this GPU memory.
 			void* bufferMem = glMapBuffer(target, GL_WRITE_ONLY);
-			memcpy(bufferMem, data, dataSize);
+			bufferCallback(bufferMem);
 			glUnmapBuffer(target);
+			bufferMem = nullptr;
 		}
 	}
 

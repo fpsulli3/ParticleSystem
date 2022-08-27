@@ -43,11 +43,11 @@ namespace gfx {
 
 		// Buffers
 		HBUFFER createStreamingUniformBuffer(unsigned int initialDataSize, unsigned char* initialData);
-		void streamDataToUniformBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+		void streamDataToUniformBuffer(HBUFFER bufferHandle, const BufferCallback &bufferCallback);
 		void bindUniformBufferBase(HBUFFER handle, unsigned int index);
 
 		HBUFFER createStreamingStorageBuffer(unsigned int initialDataSize, unsigned char* initialData);
-		void streamDataToStorageBuffer(HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+		void streamDataToStorageBuffer(HBUFFER bufferHandle, const BufferCallback &bufferCallback);
 		void bindStorageBufferBase(HBUFFER handle, unsigned int index);
 
 		void deleteBuffer(HBUFFER bufferHandle);
@@ -101,7 +101,7 @@ namespace gfx {
 		void setLastError(const GLchar* error);
 
 		GLuint createStreamingBuffer(GLenum target, unsigned int initialDataSize, unsigned char* initialData);
-		void streamDataToBuffer(GLenum target, HBUFFER bufferHandle, unsigned int dataSize, const void* data);
+		void streamDataToBuffer(GLenum target, HBUFFER bufferHandle, const BufferCallback &bufferCallback);
 
 		std::map<HVAO, BufferDesc> vaos;
 		HVAO curVao = 0;

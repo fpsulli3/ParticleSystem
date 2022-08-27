@@ -155,6 +155,7 @@
     <ClCompile Include="GLDevice.cpp" />
     <ClCompile Include="GLRenderer.cpp" />
     <ClCompile Include="GLResourceManager.cpp" />
+    <ClCompile Include="GraphicsSystem.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ResourceManager.h" />
     <ClCompile Include="Transform.cpp" />
@@ -168,14 +169,16 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ClearOptions.h" />
+    <ClInclude Include="Device.h" />
     <ClInclude Include="DrawCall.h" />
     <ClInclude Include="GLDevice.h" />
-    <ClInclude Include="GLDrawCall.h" />
     <ClInclude Include="GLResourceManager.h" />
     <ClInclude Include="GLRenderer.h" />
+    <ClInclude Include="GraphicsSystem.h" />
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Utils.h" />

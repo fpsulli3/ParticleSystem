@@ -33,16 +33,16 @@ public:
 	// The Client Width is the width of the drawable area 
 	// of the window, excluding the window's title bar, status
 	// bar, etc.
-	int getClientWidth() { return this->clientWidth;  }
+	int getClientWidth() const { return this->clientWidth;  }
 
 	// The Client Height is the width of the drawable area 
 	// of the window, excluding the window's title bar, status
 	// bar, etc.
-	int getClientHeight() { return this->clientHeight;  }
+	int getClientHeight() const { return this->clientHeight;  }
 
 	// The Win32 Window Handle (HWND). An HWND is basically just 
 	// an integer that Win32 uses to uniquely identify a window.
-	HWND getHandle() { return this->hwnd; }
+	HWND getHandle() const { return this->hwnd; }
 
 	// Allows an outside object to "register" to be informed of 
 	// any important keyboard events, such as when a key is pressed 

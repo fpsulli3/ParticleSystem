@@ -1,26 +1,20 @@
 #pragma once
 
-#define NOMINMAX
-#define	WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <gl/glew.h>
-
-#include "Device.h"
-
 namespace gfx {
-
-	// An OpenGL implementation of the Device class.
-	class GLDevice: public Device {
+	// Represents the graphics device, such as the GPU.
+	// 
+	// This is an Abstract Base Class (ABC) with no knowledge 
+	// or dependency on any particular graphics API.
+	// 
+	// I've created a subclass called GLDevice that contains 
+	// the actual OpenGL implementation. In the future, I may 
+	// want to add other implementations, such as VulkanDevice 
+	// or DX11Device.
+	class Device {
 	public:
-		// Constructor
-		GLDevice(HWND hwnd);
-
-		// Destructor
-		~GLDevice();
-
-		// Tells OpenGL that future OpenGL calls 
-		// will apply to this GLDevice.
-		void makeCurrent();
+		// Tells the underlying graphics API that 
+		// this is the device we're currently using.
+		virtual void makeCurrent()=0;
 
 		// Swaps the front and back screen buffers.
 		// Pretty much all video games have at least two 
@@ -37,19 +31,6 @@ namespace gfx {
 		// frame. Some games have longer swap chains with 
 		// more than two buffers (you might've seen triple 
 		// buffering as an option in some games).
-		void swapBuffers();
-
-	private:
-		// A handle to a Win32 Device Context.
-		// In Win32, the Device Context gives us 
-		// a way of drawing to the Window. We 
-		// give this Device Context handle to 
-		// OpenGL so that it draw to our window.
-		HDC deviceContext;
-
-		// A handle to an OpenGL Render Context.
-		// This sort of represents the graphics 
-		// hardware itself 
-		HGLRC renderContext;
+		virtual void swapBuffers()=0;
 	};
 }

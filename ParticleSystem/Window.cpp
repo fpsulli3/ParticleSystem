@@ -135,6 +135,9 @@ LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
         if (window.keyboardEventHandler != nullptr) {
             window.keyboardEventHandler->onKeyUp(wParam);
         }
+        if (wParam == VK_ESCAPE) {
+            PostQuitMessage(0);
+        }
         break;
     case WM_KEYDOWN:
         // The user pressed a key. The wParam contains a code 

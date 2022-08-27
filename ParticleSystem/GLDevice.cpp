@@ -84,7 +84,7 @@ namespace gfx {
 		wglMakeCurrent(deviceContext, renderContext);
 
 
-		// Disable vsync
+		//// Disable vsync
 		wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) wglGetProcAddress("wglSwapIntervalEXT");
 		wglSwapIntervalEXT(0);
 	}
