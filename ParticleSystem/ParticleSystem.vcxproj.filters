@@ -145,10 +145,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="triangle.vert">
+    <None Include="particle.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="triangle.frag">
+    <None Include="particle.frag">
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\.gitignore" />

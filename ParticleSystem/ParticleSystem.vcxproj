@@ -191,8 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.gitignore" />
-    <None Include="triangle.frag" />
-    <None Include="triangle.vert" />
+    <None Include="particle.frag" />
+    <None Include="particle.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

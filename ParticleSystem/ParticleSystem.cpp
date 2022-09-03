@@ -76,8 +76,8 @@ void ParticleSystem::initGraphicsResources(gfx::ResourceManager& resourceManager
     //   The same is true for all properties, e.g. texture coordinates, normals, etc.
     // Once we compile each shader, we "link" them together into a single program.
 
-    std::string vertShaderSource = loadAsciiFile("triangle.vert"); // load from file
-    std::string fragShaderSource = loadAsciiFile("triangle.frag"); // load from file
+    std::string vertShaderSource = loadAsciiFile("particle.vert"); // load from file
+    std::string fragShaderSource = loadAsciiFile("particle.frag"); // load from file
     gfx::ResourceManager::ShaderSource vertexShaderSource = {
         gfx::ResourceManager::ShaderType::VERTEX_SHADER,
         vertShaderSource.c_str()
